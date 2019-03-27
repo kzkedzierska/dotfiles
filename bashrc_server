@@ -80,21 +80,6 @@ if [ -x /usr/bin/dircolors ]; then
     alias egrep='egrep --color=auto'
 fi
 
-# some more ls aliases
-alias ll='ls -alhF'
-alias la='ls -A'
-alias l='ls -CF'
-
-#ask permission whenever rm used and tell me what I deleted...
-alias rm='rm -i -v' 
-
-#say what is being done
-alias cp='cp -v'
-
-
-#alias to Aakrosh's analysis
-alias aakrosh='cd /m/cphg-RLscratch/cphg-RLscratch/ar7jq/PbCre_prostate/final_analysis'
-
 # Alias definitions.
 # You may want to put all your additions into a separate file like
 # ~/.bash_aliases, instead of adding them here directly.
@@ -104,39 +89,3 @@ if [ -f ~/.bash_aliases ]; then
     . ~/.bash_aliases
 fi
 
-#picard
-alias picard='java -XX:ParallelGCThreads=16 -jar /home/kzk5f/packages/picard-tools-1.141/picard.jar'
-
-#SRA-toolkit
-sra_toolkit="/home/kzk5f/packages/sratoolkit.2.8.2-1-centos_linux64/bin/"
-
-#PATH
-#export JAVA_HOME=/home/kzk5f/.local/lib/jvm/jdk1.8.0/
-#export PATH=/home/kzk5f/packages/IGVTools:${JAVA_HOME}/bin/:/home/kzk5f/.local/lib:/home/kzk5f/.local/include:/usr/lib64/mpich/bin:/home/kzk5f/.local:/home/kzk5f/.local/bin:/home/kzk5f/packages/bowtie2-2.2.9/:/usr/lib64/qt-3.3/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/opt/dell/srvadmin/bin:/home/kzk5f/packages/homer/bin/:${PATH}
-export PATH=/m/cphg-RLscratch/cphg-RLscratch/share/gdc-client-1.0.1/bin/:/home/kzk5f/packages/vcf2maf:/home/kzk5f/packages/STAR/source/:/home/kzk5f/packages/weblogo/:/home/kzk5f/.local/lib:/home/kzk5f/.local/lib64:/home/kzk5f/.local/include:/usr/lib64/mpich/bin:/home/kzk5f/.local:/home/kzk5f/.local/bin:/home/kzk5f/packages/bowtie2-2.2.9/:/usr/lib64/qt-3.3/bin:/usr/local/bin:/bin:/usr/bin:/usr/local/sbin:/usr/sbin:/sbin:/opt/dell/srvadmin/bin:/home/kzk5f/packages/homer/bin/:${PATH}
-export PYTHON_HOME=/home/kzk5f/.pyenv/bin
-export PATH=${PYTHON_HOME}:$PATH
-eval "$(pyenv init -)"
-eval "$(pyenv virtualenv-init -)"
-PATH=$(echo "$PATH" | awk -v RS=':' -v ORS=":" '!a[$1]++')
-export TMPDIR=/disk1/
-#export PATH=~/.local/bin:$PATH
-export MANPATH=~/.local/share/man:~/.local/man:$MANPATH
-export LD_LIBRARY_PATH=/urs/lib64:/home/kzk5f/.local/lib64:/usr/lib64/mpich/lib:/home/kzk5f/.local/lib:${LD_LIBRARY_PATH}
-#export LD_LIBRARY_PATH=~/.local/lib:$LD_LIBRARY_PATH
-export C_INCLUDE_PATH=~/.local/include:$C_INCULE_PATH
-export CPLUS_INCLUDE_PATH=~/.local/include:$CPLUS_INCLUDE_PATH
-#export JAVA_PATH=/home/kzk5f/.local/lib/jdk1.8.0_111
-
-# enable programmable completion features (you don't need to enable
-# this, if it's already enabled in /etc/bash.bashrc and /etc/profile
-# sources /etc/bash.bashrc).
-if [ -f /etc/bash_completion ] && ! shopt -oq posix; then
-    . /etc/bash_completion
-fi
-
-#git autocompletion
-source ~/git-completion.bash
-
-# added by Anaconda2 4.4.0 installer
-#export PATH="/home/kzk5f/anaconda2/bin:$PATH"

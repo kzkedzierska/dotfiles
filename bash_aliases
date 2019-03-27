@@ -17,21 +17,11 @@ alias ll='ls -alFh'
 alias la='ls -A'
 alias l='ls -CF'
 
-# ssh peyote2 alias
-alias sshpeyote2='ssh -i /home/kkedzierska/.ssh/peyote.pub kkedzierska@192.168.3.227'
-alias openvpnp2='sudo openvpn --cd /etc/openvpn/ --config kkedzierska.conf --verb 4'
-alias p2forward='sudo ip route add 192.168.1.1 dev wlp1s0'
-alias p2R='ssh -L 8787:10.1.2.143:8787 kkedzierska@192.168.3.227'
-
-# mounting remote folders
-alias isihome='sudo sshfs kkedzierska@192.168.3.227:/mnt/isihome/kkedzierska/ /mnt/isiHome/ -o IdentityFile=/home/kkedzierska/.ssh/peyote -o reconnect -C -o workaround=all -o allow_other'
-alias peyote2='sudo sshfs kkedzierska@192.168.3.227:/home/kkedzierska/ /mnt/peyote2/ -o IdentityFile=/home/kkedzierska/.ssh/peyote -o reconnect -C -o workaround=all -o allow_other'
-alias umisihome='sudo fusermount -u /mnt/isiHome'
-alias umpeyote2='sudo fusermount -u /mnt/peyote'
-
-# ssh UVA
-alias sshzeus='ssh -i /home/kkedzierska/.ssh/id_zeus kzk5f@zeus.cphg.virginia.edu'
-alias scratch='sudo sshfs kzk5f@zeus.cphg.virginia.edu:/m/cphg-RLscratch/cphg-RLscratch/kzk5f/ /mnt/scratch/ -o IdentityFile=/home/kkedzierska/.ssh/id_zeus -o reconnect -C -o workaround=all -o allow_other'
+# work server connections
+alias rescomp='ssh jgy292@rescomp2.well.ox.ac.uk'
+alias rotation1='sudo sshfs jgy292@rescomp.well.ox.ac.uk:/well/wedge/jgy292/ /mnt/rotation1/ -o IdentityFile=/home/kzkedzierska/.ssh/rescomp -o reconnect -C -o allow_other'
+alias ucec='sudo sshfs jgy292@rescomp.well.ox.ac.uk:/well/lewis/projects/kasia/ /mnt/ucec/ -o IdentityFile=/home/kzkedzierska/.ssh/rescomp -o reconnect -C -o allow_other'
+alias cna='sudo sshfs jgy292@rescomp.well.ox.ac.uk:/gpfs2/well/church/jgy292/ /mnt/rotation2 -o IdentityFile=/home/kzkedzierska/.ssh/rescomp -o reconnect -C -o allow_other'
 
 # ask permission whenever rm used and tell me what I deleted...
 alias rm='rm -i -v'

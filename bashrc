@@ -93,9 +93,3 @@ if ! shopt -oq posix; then
   fi
 fi
 
-export PATH="/home/kkedzierska/.pyenv/bin:/home/kkedzierska/julia/bin/:$PATH"
-eval "$(pyenv init -)"
-eval "$(pyenv virtualenv-init -)"
-
-# added by Miniconda2 4.3.21 installer
-#export PATH="/home/kkedzierska/miniconda2/bin:$PATH"
