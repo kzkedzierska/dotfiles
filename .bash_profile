@@ -10,10 +10,11 @@ wisdom_msg="Today's wisdom:\n $(fortune -s wisdom)"
 
 bold=$(tput bold)
 normal=$(tput sgr0)
-quote="'A little more ${bold}PERSISETENCE${normal}, a little more ${bold}EFFORT${normal}, and what seemed hopeless ${bold}failure${normal} may turn to glorious ${bold}success${normal}.' - Albert Hubbard"
-quote="'A little more PERSISETENCE, a little more EFFORT, and what seemed hopeless failure may turn to glorious success.' - Albert Hubbard"
+# quote="'A little more ${bold}PERSISETENCE${normal}, a little more ${bold}EFFORT${normal}, and what seemed hopeless ${bold}failure${normal} may turn to glorious ${bold}success${normal}.' - Albert Hubbard"
+# quote="'A little more PERSISETENCE, a little more EFFORT, and what seemed hopeless failure may turn to glorious success.' - Albert Hubbard"
 
-echo -e "${welcome_msg}\n\n${quote}" | 
+# echo -e "${welcome_msg}\n\n${quote}" | 
+echo -e "${welcome_msg}\n" |
   cowsay -W 45 -f "$(cowsay -l | tail -n+2 | sed 's/ /\n/g' | shuf | head -n1)" | 
     lolcat -F 0.01
 

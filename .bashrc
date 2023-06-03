@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 # Path to the bash it configuration
-export BASH_IT="/home/kzkedzierska/.bash_it"
+export BASH_IT="/path/to/.bash_it"
 
 # Lock and Load a custom theme file
 # location /.bash_it/themes/
@@ -11,7 +11,7 @@ export BASH_IT_THEME='bobby'
 # cloned bash-it with a remote other than origin such as `bash-it`.
 # export BASH_IT_REMOTE='bash-it'
 
-# Your place for hosting Git repos. I use this for private repos.
+# Your place for hosting Git repos. 
 export GIT_HOSTING='git@git.domain.com'
 
 # Don't check mail when opening terminal.
@@ -51,20 +51,6 @@ export SCM_CHECK=true
 # Uncomment this to make Bash-it create alias reload.
 # export BASH_IT_RELOAD_LEGACY=1
 
-# >>> conda initialize >>>
-# !! Contents within this block are managed by 'conda init' !!
-__conda_setup="$('/home/kzkedzierska/.local/share/r-miniconda/bin/conda' 'shell.bash' 'hook' 2> /dev/null)"
-if [ $? -eq 0 ]; then
-    eval "$__conda_setup"
-else
-    if [ -f "/home/kzkedzierska/.local/share/r-miniconda/etc/profile.d/conda.sh" ]; then
-        . "/home/kzkedzierska/.local/share/r-miniconda/etc/profile.d/conda.sh"
-    else
-        export PATH="/home/kzkedzierska/.local/share/r-miniconda/bin:$PATH"
-    fi
-fi
-unset __conda_setup
-# <<< conda initialize <<<
 # Load Bash It
 source "$BASH_IT"/bash_it.sh
 
@@ -86,7 +72,6 @@ if ! shopt -oq posix; then
     . /etc/bash_completion                                                      
   fi                                                                            
 fi
-
 
 echo -e "Welcome! \n\nIt's $(date '+%H:%M on %A, %B %d, %Y').\n\nHere's some wisdom for you:\n $(fortune -s wisdom)" |
   cowsay -f "$(cowsay -l | tail -n+2 | sed 's/ /\n/g' | shuf | head -n1)" -W 45 |
