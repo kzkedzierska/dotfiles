@@ -1,0 +1,50 @@
+#para tener scroll-back
+termcapinfo xterm|xterms|xs|rxvt ti@:te@
+defscrollback 5048
+##
+### detach on hangup
+autodetach on
+##
+### don't display the copyright page
+startup_message off
+##
+### emulate .logout message
+pow_detach_msg "Screen session of $LOGNAME $:cr:$:nl:ended."
+##
+#
+# BARRA DE ESTADO v1
+#### alternative caption, gives window list, LOGNAME and current date:
+caption always "%u%{wk}%?%-Lw%?%{bw}%n*%f %t%?(%u)%?%{wk}%?%+Lw %=  %{mk}host:%H Load:%l  %{ck}%M%{wk} %{ck}%d %{gk}%c"
+
+# BARRA DE ESTADO v2
+#hardstatus alwayslastline
+#hardstatus string "%{.bW}%-w%{.rW}%n %t%{-}%+w %=%{..G} %H %{..Y} %d/%m %C%a Load: %l"
+#caption always "%3n %t%? @%u%?%? [%h]%?"a
+#
+termcapinfo xterm ti@:te@
+
+defscrollback 1000
+
+# Scroll up
+bindkey -d "^[[5S" eval copy "stuff 5\025"
+bindkey -m "^[[5S" stuff 5\025
+
+# Scroll down
+bindkey -d "^[[5T" eval copy "stuff 5\004"
+bindkey -m "^[[5T" stuff 5\004
+
+# Scroll up more
+bindkey -d "^[[25S" eval copy "stuff \025"
+bindkey -m "^[[25S" stuff \025
+
+# Scroll down more
+bindkey -d "^[[25T" eval copy "stuff \004"
+bindkey -m "^[[25T" stuff \004
+
+
+bindkey -k k5 prev # F5 for previous window
+bindkey -k k6 next # F6 for next window
+
+#status line
+#hardstatus alwayslastline '%{= G}[ %{G}%H %{g}][%= %{= w}%?%-Lw%?%{= R}%n*%f %t%?%{= R}(%u)%?%{= w}%+Lw%?%= %{= g}][ %{y}Load: %l %{g}][%{B}%Y-%m-%d %{W}%c:%s %{g}]'
+
