@@ -122,8 +122,8 @@ install_apt_deps() {
   log_system "installing apt dependencies"
   sudo apt-get update -qq
   # 'tree' from apt is GNU tree (not the annoying BSD/sed-style variant some distros ship)
-  sudo apt-get install -y -qq git curl tree cowsay fortune-mod lolcat >/dev/null
-  log_success "apt dependencies installed (git curl tree cowsay fortune-mod lolcat)"
+  sudo apt-get install -y -qq git curl tree cowsay fortunes fortune-mod lolcat >/dev/null
+  log_success "apt dependencies installed (git curl tree cowsay fortunes fortune-mod lolcat)"
 }
 
 install_gh() {
@@ -204,7 +204,10 @@ run_bash_it() {
     return
   fi
   log_system "running bash-it install"
-  "$BASH_IT_DIR/install.sh" --silent -f && log_success "bash-it installed"
+  # --no-modify-config: enable default components but DO NOT rewrite ~/.bashrc.
+  # Our ~/.bashrc is a symlink into the repo and already sources bash_it.sh; without
+  # -n, bash-it's installer writes through the symlink and clobbers the repo file.
+  "$BASH_IT_DIR/install.sh" --silent --no-modify-config && log_success "bash-it installed (~/.bashrc left intact)"
 }
 
 auth_github() {
