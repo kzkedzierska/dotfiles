@@ -1,18 +1,14 @@
 #!/usr/bin/env bash
 
-# Path to the bash it configuration
-export BASH_IT="/path/to/.bash_it"
+# ensure user-local bins (uv, claude, ...) are on PATH
+export PATH="$HOME/.local/bin:$PATH"
+
+# Path to the bash it configuration (cloned by bootstrap.sh into ~/github/bash-it)
+export BASH_IT="$HOME/github/bash-it"
 
 # Lock and Load a custom theme file
 # location /.bash_it/themes/
 export BASH_IT_THEME='bobby'
-
-# (Advanced): Change this to the name of your remote repo if you
-# cloned bash-it with a remote other than origin such as `bash-it`.
-# export BASH_IT_REMOTE='bash-it'
-
-# Your place for hosting Git repos. 
-export GIT_HOSTING='git@git.domain.com'
 
 # Don't check mail when opening terminal.
 unset MAILCHECK
@@ -73,6 +69,12 @@ if ! shopt -oq posix; then
   fi                                                                            
 fi
 
+# add git completion
+if [ -f ~/.git-completion.bash ]; then
+  . ~/.git-completion.bash
+fi
+
+# print cow saying a fortune
 echo -e "Welcome! \n\nIt's $(date '+%H:%M on %A, %B %d, %Y').\n\nHere's some wisdom for you:\n $(fortune -s wisdom)" |
   cowsay -f "$(cowsay -l | tail -n+2 | sed 's/ /\n/g' | shuf | head -n1)" -W 45 |
     lolcat -F 0.01

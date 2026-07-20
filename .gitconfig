@@ -1,0 +1,7 @@
+[user]
+	name = Kasia Kedzierska
+	email = 31040515+kzkedzierska@users.noreply.github.com
+[core]
+	editor = vim
+[init]
+	defaultBranch = main

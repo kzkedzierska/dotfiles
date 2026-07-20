@@ -1,0 +1,9 @@
+# Claude Code per-project session state (not config)
+.claude/
+
+# machine-local / secret settings must never be committed
+*.local.json
+
+# Claude Code credentials & personal state, in case they ever land here
+.claude.json
+.credentials.json
