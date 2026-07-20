@@ -1,5 +1,6 @@
 # ~/.bash_aliases: executed by bashrc 
 
+
 # enable color support of ls and also add handy aliases
 if [ -x /usr/bin/dircolors ]; then
     test -r ~/.dircolors && eval "$(dircolors -b ~/.dircolors)" || eval "$(dircolors -b)"
@@ -17,8 +18,8 @@ alias ll='ls -alFh'
 alias la='ls -A'
 alias l='ls -CF'
 
-# ask permission whenever rm used and tell me what I deleted...
-alias rm='rm -i -v'
+# ask permission whenever rm used
+alias rm='rm -i'
 
 # say what is being done
 alias cp='cp -v'

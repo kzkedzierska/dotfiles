@@ -1,20 +1,7 @@
-# .bash_profile
-
+# Source .bashrc if it exists
 if [ -f ~/.bashrc ]; then
-  . ~/.bashrc
+  source ~/.bashrc
 fi
 
-# Welcome cow :)
-welcome_msg="Welcome back Kasia! \n\nIt's $(date '+%H:%M on %A, %B %d, %Y')"
-wisdom_msg="Today's wisdom:\n $(fortune -s wisdom)"
-
-bold=$(tput bold)
-normal=$(tput sgr0)
-
-# echo -e "${welcome_msg}\n\n${quote}" | 
-echo -e "${welcome_msg}\n" |
-  cowsay -W 45 -f "$(cowsay -l | tail -n+2 | sed 's/ /\n/g' | shuf | head -n1)" | 
-    lolcat -F 0.01
-
-
-
+# uv writes its PATH setup here; source it if present
+[ -f "$HOME/.local/bin/env" ] && . "$HOME/.local/bin/env"
