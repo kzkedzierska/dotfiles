@@ -121,8 +121,9 @@ check_dependencies() {
 install_apt_deps() {
   log_system "installing apt dependencies"
   sudo apt-get update -qq
-  sudo apt-get install -y -qq git curl cowsay fortune-mod lolcat >/dev/null
-  log_success "apt dependencies installed (git curl cowsay fortune-mod lolcat)"
+  # 'tree' from apt is GNU tree (not the annoying BSD/sed-style variant some distros ship)
+  sudo apt-get install -y -qq git curl tree cowsay fortune-mod lolcat >/dev/null
+  log_success "apt dependencies installed (git curl tree cowsay fortune-mod lolcat)"
 }
 
 install_gh() {
@@ -256,7 +257,8 @@ log_debug "config: LOG_LEVEL=${LOG_LEVEL} DO_TOOLS=${DO_TOOLS} DO_AUTH=${DO_AUTH
 log_debug "repos: dotfiles=${DOTFILES_REPO} bash-it=${BASH_IT_REPO} agents=${AGENTS_REPO}"
 
 mkdir -p "$HOME/.local/bin"
-export PATH="$HOME/.local/bin:$PATH"
+# /usr/games is where Ubuntu installs cowsay/fortune/lolcat
+export PATH="/usr/games:$HOME/.local/bin:$PATH"
 
 check_dependencies
 
