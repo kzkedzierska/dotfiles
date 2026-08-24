@@ -2,7 +2,8 @@
 
 `AGENTS.md` is the canonical, secret-free policy shared by Codex, Claude Code, and
 local GitHub Copilot CLI sessions. `CLAUDE.md` imports that policy and adds a small
-Claude-specific overlay.
+Claude-specific overlay. Reusable workflows live under `skills/`, while project-agent
+starting points live under `templates/custom-agents/`.
 
 Run the installer from the repository root:
 
@@ -22,6 +23,8 @@ It creates instruction links and local settings copies:
 ~/.copilot/copilot-instructions.md    -> agents/AGENTS.md
 ~/.codex/config.toml                  local copy of codex/config.toml
 ~/.claude/settings.json               local copy of claude/settings.json
+~/.agents/skills/<name>               -> agents/skills/<name> (Codex + Copilot)
+~/.claude/skills/<name>               -> agents/skills/<name> (Claude Code)
 ```
 
 Existing non-symlink files are never overwritten by the default mode. Settings are copied with mode `0600`,
@@ -31,7 +34,7 @@ under `${XDG_STATE_HOME:-~/.local/state}/dotfiles-backups/` before installing fr
 template copies.
 
 The installer honors `XDG_CONFIG_HOME`, `XDG_STATE_HOME`, `CODEX_HOME`,
-`CLAUDE_CONFIG_DIR`, and `COPILOT_HOME`.
+`CLAUDE_CONFIG_DIR`, `COPILOT_HOME`, and `AGENTS_HOME`.
 
 Default installation automatically migrates only the exact links created by the old
 `instructing_agents` bootstrap and preserves them in the backup directory. All unknown
@@ -75,3 +78,6 @@ genuinely benefits from independent parallel contexts.
 
 Use `templates/project-AGENTS.md` as a checklist, deleting headings that add no useful
 context.
+
+See [`EXTENSIONS.md`](EXTENSIONS.md) for built-in capabilities, reviewed external
+catalogs, installation commands, and the third-party safety checklist.

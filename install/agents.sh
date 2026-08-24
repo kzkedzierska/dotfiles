@@ -22,6 +22,7 @@ xdg_state_home=${XDG_STATE_HOME:-"$HOME/.local/state"}
 codex_home=${CODEX_HOME:-"$HOME/.codex"}
 claude_home=${CLAUDE_CONFIG_DIR:-"$HOME/.claude"}
 copilot_home=${COPILOT_HOME:-"$HOME/.copilot"}
+agents_home=${AGENTS_HOME:-"$HOME/.agents"}
 
 case "${1-}" in
     "") ;;
@@ -56,11 +57,15 @@ is_known_legacy_instruction_link() {
     target_path=$1
     [ -L "$target_path" ] || return 1
     link_target=$(readlink "$target_path")
-    case "$link_target" in
-        "$HOME/.config/AGENTS.md"|"$xdg_config_home/AGENTS.md"|"$HOME/github/instructing_agents/AGENTS.md")
-            return 0
-            ;;
-    esac
+    if [ "$target_path" = "$xdg_config_home/AGENTS.md" ] &&
+        [ "$link_target" = "$HOME/github/instructing_agents/AGENTS.md" ]; then
+        return 0
+    fi
+    if [ "$target_path" = "$claude_home/CLAUDE.md" ] &&
+        { [ "$link_target" = "$HOME/.config/AGENTS.md" ] ||
+          [ "$link_target" = "$xdg_config_home/AGENTS.md" ]; }; then
+        return 0
+    fi
     return 1
 }
 
@@ -146,8 +151,18 @@ copy_config() {
     printf 'installed local config: %s (template: %s)\n' "$target_path" "$source_path"
 }
 
+install_shared_skills() {
+    for skill_path in "$repo_dir"/agents/skills/*; do
+        [ -d "$skill_path" ] || continue
+        skill_name=${skill_path##*/}
+        link_one "$skill_path" "$agents_home/skills/$skill_name" || status=1
+        link_one "$skill_path" "$claude_home/skills/$skill_name" || status=1
+    done
+}
+
 status=0
-printf 'Codex home: %s\nClaude config: %s\nCopilot home: %s\n' "$codex_home" "$claude_home" "$copilot_home"
+printf 'Codex home: %s\nClaude config: %s\nCopilot home: %s\nShared skills: %s\n' \
+    "$codex_home" "$claude_home" "$copilot_home" "$agents_home/skills"
 link_one "$repo_dir/agents/AGENTS.md" "$xdg_config_home/agent-instructions/AGENTS.md" || status=1
 link_one "$repo_dir/agents/AGENTS.md" "$xdg_config_home/AGENTS.md" || status=1
 link_one "$repo_dir/agents/AGENTS.md" "$codex_home/AGENTS.md" || status=1
@@ -156,5 +171,6 @@ link_one "$repo_dir/agents/CLAUDE.md" "$claude_home/CLAUDE.md" || status=1
 link_one "$repo_dir/agents/AGENTS.md" "$copilot_home/copilot-instructions.md" || status=1
 copy_config "$repo_dir/codex/config.toml" "$codex_home/config.toml" || status=1
 copy_config "$repo_dir/claude/settings.json" "$claude_home/settings.json" || status=1
+install_shared_skills
 
 exit "$status"

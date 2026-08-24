@@ -1,0 +1,4 @@
+interface:
+  display_name: "Evidence Code Review"
+  short_description: "Repository-grounded, high-signal code review"
+  default_prompt: "Use $evidence-code-review to review the current branch against its merge base."

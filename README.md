@@ -64,6 +64,7 @@ environment or compute image, where their compatibility can be tested with that 
 - `.bashrc`, `.bash_profile`, `.bash_aliases`, `.inputrc`, `.screenrc` — shell / terminal config
 - `.gitconfig` — git identity + defaults (no credentials; see below)
 - `agents/` — canonical shared agent policy, Claude overlay, and project template
+- `agents/skills/` — reviewed cross-tool skills installed for Codex, Claude, and Copilot
 - `codex/config.toml`, `claude/settings.json` — secret-free local settings templates
 - `install/agents.sh` — safe, idempotent agent configuration installer
 - `bootstrap.sh` — one-shot provisioning script
