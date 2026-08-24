@@ -1,0 +1,31 @@
+name: pre-commit
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Check shell syntax
+        run: |
+          bash -n bootstrap.sh
+          sh -n install/agents.sh install/check-prerequisites.sh
+      - name: Test isolated agent installation
+        env:
+          HOME: ${{ runner.temp }}/test-home
+        run: |
+          mkdir -p "$HOME"
+          ./install/agents.sh
+          ./install/agents.sh --check
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+      - run: python -m pip install pre-commit==4.6.0
+      - run: pre-commit run --all-files

@@ -6,10 +6,8 @@
 [init]
 	defaultBranch = main
 [credential "https://github.com"]
-	helper = 
+	helper =
 	helper = !/usr/bin/gh auth git-credential
 [credential "https://gist.github.com"]
-	helper = 
+	helper =
 	helper = !/usr/bin/gh auth git-credential
-[credential]
-	helper = "!f() { /home/kasia/.vscode-server/bin/df53daabb18cd157bdb08c7f01c34df936cf12f4/node /tmp/vscode-remote-containers-3e8b0a41-9e08-4e8c-82b5-2cbfee4539b3.js git-credential-helper $*; }; f"

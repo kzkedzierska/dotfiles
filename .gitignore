@@ -1,5 +1,6 @@
-# Claude Code per-project session state (not config)
-.claude/
+# Claude Code per-project session state (not the tracked instruction entry point)
+.claude/*
+!.claude/CLAUDE.md
 
 # machine-local / secret settings must never be committed
 *.local.json
@@ -7,3 +8,23 @@
 # Claude Code credentials & personal state, in case they ever land here
 .claude.json
 .credentials.json
+
+# Secrets and machine-local overrides
+.env
+.env.*
+!.env.example
+*.local
+*.pem
+*.key
+*.p12
+*.pfx
+*.token
+credentials.json
+secrets.*
+auth.json
+
+# Local setup artifacts
+.DS_Store
+.codex-log/
+dotfiles-backups/
+codex/tmp/

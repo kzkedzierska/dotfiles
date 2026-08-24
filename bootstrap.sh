@@ -5,22 +5,22 @@
 #
 # Usage: bootstrap.sh [-vqh] [--no-auth] [--no-tools] [--version]
 #
-# Installs deps and CLIs (git, gh, uv, claude), clones my dotfiles / bash-it fork /
-# instructing_agents into ~/github, symlinks the configs into $HOME, and (unless
-# --no-auth) launches the interactive GitHub and Claude Code login flows.
+# Installs deps and CLIs (git, gh, uv, codex, claude, copilot), clones my dotfiles and bash-it fork
+# into ~/github, installs the configs into $HOME, and (unless --no-auth) launches
+# the interactive GitHub and Claude Code login flows.
 #
 # Safe to re-run: every step is idempotent (skips work already done).
 #
 # OPTIONS:
 #   --no-auth        Skip the interactive gh / claude login steps
-#   --no-tools       Skip apt/gh/uv/claude installation (only clone + symlink)
+#   --no-tools       Skip apt/agent CLI installation (only clone + symlink)
 #   --verbose, -v    Verbose mode (show debug logging)
 #   --quiet, -q      Quiet mode (errors only)
 #   --help, -h       Print this help and exit
 #   --version        Print version and exit
 #
 # ENV OVERRIDES (optional):
-#   DOTFILES_REPO, BASH_IT_REPO, AGENTS_REPO   override the git URLs
+#   DOTFILES_REPO, BASH_IT_REPO   override the git URLs
 # ======================================================================================================================
 
 set -Eeuo pipefail
@@ -28,7 +28,6 @@ set -Eeuo pipefail
 # ---- config: edit these (or override via env) if you fork under a different account ----
 DOTFILES_REPO="${DOTFILES_REPO:-https://github.com/kzkedzierska/dotfiles.git}"
 BASH_IT_REPO="${BASH_IT_REPO:-https://github.com/kzkedzierska/bash-it.git}"
-AGENTS_REPO="${AGENTS_REPO:-https://github.com/kzkedzierska/instructing_agents.git}"
 # ----------------------------------------------------------------------------------------
 
 PROGRAM="bootstrap.sh"
@@ -37,13 +36,13 @@ VERSION="1.0"
 GITHUB_DIR="$HOME/github"
 DOTFILES_DIR="$GITHUB_DIR/dotfiles"
 BASH_IT_DIR="$GITHUB_DIR/bash-it"
-AGENTS_DIR="$GITHUB_DIR/instructing_agents"
 
 # Defaults / state
 LOG_LEVEL="normal"   # quiet | normal | verbose
 DO_AUTH="true"
 DO_TOOLS="true"
 EXITCODE=0
+BACKUP_DIR="$HOME/.local/state/dotfiles-backups/bootstrap-$(date '+%Y%m%d-%H%M%S')"
 
 # ---------------------------------------------------------------------------------------- logging
 if [ -t 2 ] && [ -z "${NO_COLOR:-}" ]; then
@@ -76,7 +75,7 @@ symlink dotfiles, and launch the GitHub + Claude Code login flows.
 
 ${YELLOW}OPTIONS:${NC}
     ${GREEN}--no-auth${NC}         Skip the interactive gh / claude login steps
-    ${GREEN}--no-tools${NC}        Skip apt/gh/uv/claude installation (clone + symlink only)
+    ${GREEN}--no-tools${NC}        Skip apt/agent CLI installation (clone + symlink only)
     ${GREEN}--verbose, -v${NC}     Verbose mode (show debug logging)
     ${GREEN}--quiet, -q${NC}       Quiet mode (errors only)
     ${GREEN}--help, -h${NC}        Print this help and exit
@@ -96,6 +95,16 @@ arg_error()      { log_error "$*"; usage; exit 1; }
 # ---------------------------------------------------------------------------------------- helpers
 have() { command -v "$1" >/dev/null 2>&1; }
 
+canonical_repo_id() {
+  local value="${1%/}"
+  case "$value" in
+    git@github.com:*) value="${value#git@github.com:}" ;;
+    https://github.com/*) value="${value#https://github.com/}" ;;
+    ssh://git@github.com/*) value="${value#ssh://git@github.com/}" ;;
+  esac
+  printf '%s\n' "${value%.git}"
+}
+
 # Run a command interactively against the real terminal, even under `curl | bash`
 # (where stdin is the pipe). Returns non-zero (without aborting) if no tty is available.
 run_interactive() {
@@ -108,10 +117,10 @@ run_interactive() {
 
 check_dependencies() {
   log_debug "checking base dependencies"
-  have sudo || die "sudo is required but not found"
-  have curl || have wget || die "need curl or wget to fetch installers"
-  # git is bootstrapped by install_apt_deps; only hard-require it when tools are skipped
-  if [ "$DO_TOOLS" = "false" ] && ! have git; then
+  if [ "$DO_TOOLS" = "true" ]; then
+    have sudo || die "sudo is required to install tools but was not found"
+    have curl || have wget || die "need curl or wget to fetch installers"
+  elif ! have git; then
     die "git not found and --no-tools was given; install git first"
   fi
   log_debug "dependency check passed"
@@ -122,8 +131,8 @@ install_apt_deps() {
   log_system "installing apt dependencies"
   sudo apt-get update -qq
   # 'tree' from apt is GNU tree (not the annoying BSD/sed-style variant some distros ship)
-  sudo apt-get install -y -qq git curl tree cowsay fortunes fortune-mod lolcat >/dev/null
-  log_success "apt dependencies installed (git curl tree cowsay fortunes fortune-mod lolcat)"
+  sudo apt-get install -y -qq git curl npm tree cowsay fortunes fortune-mod lolcat >/dev/null
+  log_success "apt dependencies installed (git curl npm tree cowsay fortunes fortune-mod lolcat)"
 }
 
 install_gh() {
@@ -156,14 +165,37 @@ install_claude() {
   have claude && log_success "claude installed" || log_warn "claude installed but not on PATH yet (check ~/.local/bin)"
 }
 
+install_codex() {
+  if have codex; then log_info "codex already installed ($(codex --version | head -1))"; return; fi
+  log_system "installing Codex CLI"
+  sudo npm install --global @openai/codex
+  hash -r
+  have codex && log_success "codex installed ($(codex --version | head -1))" || die "codex installation completed but codex is not on PATH"
+}
+
+install_copilot() {
+  if have copilot; then log_info "copilot already installed ($(copilot --version | head -1))"; return; fi
+  log_system "installing GitHub Copilot CLI"
+  curl -fsSL https://gh.io/copilot-install | bash
+  hash -r
+  have copilot && log_success "copilot installed ($(copilot --version | head -1))" || die "copilot installation completed but copilot is not on PATH"
+}
+
 clone_repos() {
   log_system "cloning repos into ${GITHUB_DIR}"
   mkdir -p "$GITHUB_DIR"
-  local pairs=("$DOTFILES_DIR|$DOTFILES_REPO" "$BASH_IT_DIR|$BASH_IT_REPO" "$AGENTS_DIR|$AGENTS_REPO")
+  local pairs=("$DOTFILES_DIR|$DOTFILES_REPO" "$BASH_IT_DIR|$BASH_IT_REPO")
   for p in "${pairs[@]}"; do
     local dir="${p%%|*}" url="${p##*|}"
     if [ -d "$dir/.git" ]; then
-      log_info "already cloned: $(basename "$dir")"
+      local origin
+      origin=$(git -C "$dir" remote get-url origin) || die "existing checkout has no origin: $dir"
+      if [ "$(canonical_repo_id "$origin")" != "$(canonical_repo_id "$url")" ]; then
+        die "refusing to update unexpected repository at $dir (origin: $origin; expected: $url)"
+      fi
+      log_system "updating $(basename "$dir") with a fast-forward-only pull"
+      git -C "$dir" pull --ff-only || die "could not safely update $dir; resolve local changes or divergence, then rerun"
+      log_success "updated $(basename "$dir")"
     else
       git clone --depth 1 "$url" "$dir" && log_success "cloned $(basename "$dir")"
     fi
@@ -176,26 +208,42 @@ symlink_dotfiles() {
   for f in .screenrc .bashrc .bash_profile .bash_aliases .inputrc .gitconfig .vimrc; do
     src="$DOTFILES_DIR/$f"
     if [ -f "$src" ]; then
-      ln -sf "$src" "$HOME/$f"
-      log_debug "linked ~/$f -> $src"
+      safe_link "$src" "$HOME/$f"
     fi
   done
   log_success "dotfiles symlinked"
 }
 
-symlink_agents() {
-  log_system "symlinking agent instructions"
-  mkdir -p "$HOME/.config" "$HOME/.claude"
-  ln -sf "$AGENTS_DIR/AGENTS.md" "$HOME/.config/AGENTS.md"
-  ln -sf "$HOME/.config/AGENTS.md" "$HOME/.claude/CLAUDE.md"
-  log_success "AGENTS.md + CLAUDE.md linked to instructing_agents"
+safe_link() {
+  local src="$1" target="$2" relative saved
+  if [ -L "$target" ] && [ "$(readlink "$target")" = "$src" ]; then
+    log_debug "already linked: $target -> $src"
+    return
+  fi
+  if [ -e "$target" ] || [ -L "$target" ]; then
+    relative="${target#"$HOME"/}"
+    saved="$BACKUP_DIR/$relative"
+    mkdir -p -m 700 "$(dirname "$saved")"
+    [ ! -e "$saved" ] && [ ! -L "$saved" ] || die "backup destination already exists: $saved"
+    mv "$target" "$saved"
+    log_warn "preserved existing $target at $saved"
+  fi
+  ln -s "$src" "$target"
+  log_debug "linked $target -> $src"
 }
 
-symlink_claude_settings() {
-  log_system "symlinking claude settings (non-secret; auth stays per-node)"
-  mkdir -p "$HOME/.claude"
-  ln -sf "$DOTFILES_DIR/claude/settings.json" "$HOME/.claude/settings.json"
-  log_success "~/.claude/settings.json linked"
+install_agent_config() {
+  log_system "installing agent instructions and secret-safe local settings"
+  [ -x "$DOTFILES_DIR/install/agents.sh" ] || die "missing installer: $DOTFILES_DIR/install/agents.sh"
+  "$DOTFILES_DIR/install/agents.sh" || die "agent configuration conflicts require review; use $DOTFILES_DIR/install/agents.sh --backup-existing only after inspecting them"
+  "$DOTFILES_DIR/install/agents.sh" --check || die "agent configuration validation failed"
+  log_success "Codex, Claude Code, and Copilot configuration installed and validated"
+}
+
+verify_tools() {
+  log_system "validating required tools"
+  "$DOTFILES_DIR/install/check-prerequisites.sh" || die "tool readiness check failed"
+  log_success "required tools are ready"
 }
 
 run_bash_it() {
@@ -232,11 +280,32 @@ auth_claude() {
   fi
 }
 
+auth_codex() {
+  if ! have codex; then log_warn "codex not available; skipping Codex login"; return; fi
+  if codex login status >/dev/null 2>&1; then log_info "Codex already authenticated"; return; fi
+  log_system "launching 'codex login' - follow the browser/device prompts"
+  if run_interactive codex login; then
+    log_success "Codex authenticated"
+  else
+    log_warn "Codex login skipped/failed (no tty?). Run manually: codex login"
+  fi
+}
+
+auth_copilot() {
+  if ! have copilot; then log_warn "copilot not available; skipping Copilot login"; return; fi
+  log_system "launching 'copilot' - use /login to authenticate, then exit the app"
+  if run_interactive copilot; then
+    log_success "GitHub Copilot CLI session finished"
+  else
+    log_warn "Copilot launch skipped (no tty?). Run manually: copilot   (then /login)"
+  fi
+}
+
 summary() {
   echo
   log_system "bootstrap finished (exit code ${EXITCODE})"
   echo -e "${GREEN}Next:${NC} source ~/.bashrc"
-  [ "$DO_AUTH" = "false" ] && echo -e "      (auth skipped) run: ${GRAY}gh auth login${NC} and ${GRAY}claude${NC} then ${GRAY}/login${NC}"
+  [ "$DO_AUTH" = "false" ] && echo -e "      (auth skipped) run: ${GRAY}gh auth login${NC}, ${GRAY}codex login${NC}, ${GRAY}claude${NC} then ${GRAY}/login${NC}, and ${GRAY}copilot${NC} then ${GRAY}/login${NC}"
   true
 }
 
@@ -257,7 +326,7 @@ done
 
 # ---------------------------------------------------------------------------------------- main
 log_debug "config: LOG_LEVEL=${LOG_LEVEL} DO_TOOLS=${DO_TOOLS} DO_AUTH=${DO_AUTH}"
-log_debug "repos: dotfiles=${DOTFILES_REPO} bash-it=${BASH_IT_REPO} agents=${AGENTS_REPO}"
+log_debug "repos: dotfiles=${DOTFILES_REPO} bash-it=${BASH_IT_REPO}"
 
 mkdir -p "$HOME/.local/bin"
 # /usr/games is where Ubuntu installs cowsay/fortune/lolcat
@@ -269,20 +338,24 @@ if [ "$DO_TOOLS" = "true" ]; then
   install_apt_deps
   install_gh
   install_uv
+  install_codex
   install_claude
+  install_copilot
 else
   log_info "--no-tools: skipping installation"
 fi
 
 clone_repos
 symlink_dotfiles
-symlink_agents
-symlink_claude_settings
+install_agent_config
 run_bash_it
+[ "$DO_TOOLS" = "false" ] || verify_tools
 
 if [ "$DO_AUTH" = "true" ]; then
   auth_github
+  auth_codex
   auth_claude
+  auth_copilot
 else
   log_info "--no-auth: skipping interactive logins"
 fi

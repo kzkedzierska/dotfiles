@@ -1,4 +1,4 @@
-# ~/.bash_aliases: executed by bashrc 
+# ~/.bash_aliases: executed by bashrc
 
 
 # enable color support of ls and also add handy aliases
@@ -29,4 +29,3 @@ alias invert_colors='xcalib -invert -alter'
 
 # xclip
 alias xclip="xclip -selection c"
-
