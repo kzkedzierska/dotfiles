@@ -20,6 +20,8 @@ jobs:
       - name: Test isolated agent installation
         env:
           HOME: ${{ runner.temp }}/test-home
+          XDG_CONFIG_HOME: ${{ runner.temp }}/test-home/.config
+          XDG_STATE_HOME: ${{ runner.temp }}/test-home/.local/state
         run: |
           mkdir -p "$HOME"
           ./install/agents.sh

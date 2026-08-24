@@ -107,7 +107,7 @@ copy_config() {
 
     if [ "$mode" = check ]; then
         if [ -f "$target_path" ] && [ ! -L "$target_path" ]; then
-            mode_bits=$(stat -f '%Lp' "$target_path" 2>/dev/null || stat -c '%a' "$target_path" 2>/dev/null || printf 'unknown')
+            mode_bits=$(stat -c '%a' "$target_path" 2>/dev/null || stat -f '%Lp' "$target_path" 2>/dev/null || printf 'unknown')
             if [ "$mode_bits" != 600 ]; then
                 printf 'unsafe permissions on %s: %s (expected 600)\n' "$target_path" "$mode_bits" >&2
                 return 1
