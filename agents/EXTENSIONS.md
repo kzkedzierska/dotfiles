@@ -33,11 +33,19 @@ Install an OpenAI curated skill from a Codex prompt with, for example:
 $skill-installer jupyter-notebook
 ```
 
-GitHub Copilot CLI can install a reviewed skill from a file, URL, or directory:
+For standard public skill repositories, GitHub CLI provides a cross-agent discovery,
+preview, install, and update workflow:
 
 ```sh
-copilot plugins install --skill /path/to/skill/SKILL.md
+gh skill search jupyter
+gh skill preview github/awesome-copilot documentation-writer
+gh skill install github/awesome-copilot documentation-writer \
+  --agent codex --scope user --pin COMMIT_OR_TAG
 ```
+
+Repeat the install with `--agent claude-code` when Claude needs its own personal copy.
+Preview the complete skill and supporting files before installation; do not use `--force`
+as a routine update mechanism.
 
 Claude Code discovers personal skills under `~/.claude/skills/`; Codex and Copilot both
 discover the open-standard location `~/.agents/skills/`. This repository's installer
