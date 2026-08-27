@@ -12,7 +12,8 @@ and free of credentials or private data.
 - `agents/`: canonical shared agent policy, Claude overlay, and project template.
 - `codex/` and `claude/`: secret-free settings templates copied into home directories.
 - `install/agents.sh`: portable agent setup and validation.
-- Root dotfiles are linked into `$HOME` by the bootstrap.
+- Root shell/editor dotfiles are linked into `$HOME`; `git/gitconfig` is copied to a
+  writable, machine-local `~/.gitconfig`.
 
 ## Contracts
 

@@ -39,7 +39,8 @@ bash bootstrap.sh --no-auth -v
 1. Installs deps and CLIs: `git`, `gh`, `uv`, `codex`, `claude` (Claude Code),
    and `copilot`, plus the greeting deps `cowsay`, `fortune-mod`, `lolcat`.
 2. Clones into `~/github/`: this repo (`dotfiles`) and my [bash-it fork](https://github.com/kzkedzierska/bash-it).
-3. Symlinks the dotfiles into `$HOME`.
+3. Symlinks shell/editor dotfiles into `$HOME` and copies the Git config template to a
+   writable, machine-local `~/.gitconfig`.
 4. Symlinks the shared agent policy into Codex, Claude Code, and GitHub Copilot CLI.
 5. Copies secret-free Codex and Claude settings into local mode-`0600` files. Writable
    settings are deliberately not symlinked into this public checkout.
@@ -62,7 +63,7 @@ environment or compute image, where their compatibility can be tested with that 
 ## What's here
 
 - `.bashrc`, `.bash_profile`, `.bash_aliases`, `.inputrc`, `.screenrc` — shell / terminal config
-- `.gitconfig` — git identity + defaults (no credentials; see below)
+- `git/gitconfig` — secret-free Git config template copied to writable `~/.gitconfig`
 - `agents/` — canonical shared agent policy, Claude overlay, and project template
 - `agents/skills/` — reviewed cross-tool skills installed for Codex, Claude, and Copilot
 - `codex/config.toml`, `claude/settings.json` — secret-free local settings templates
@@ -77,7 +78,9 @@ environment or compute image, where their compatibility can be tested with that 
 Credentials are set up **interactively, per node**, and are kept fully separate from the config here:
 
 - **Claude Code** — auth token lives in `~/.claude/.credentials.json` (created by `claude` → `/login`), never in `settings.json`. Machine-local, non-shared, and secret overrides go in `~/.claude/settings.local.json` (auto-gitignored).
-- **GitHub** — `gh auth login`. The `.gitconfig` here deliberately drops the machine-specific VS Code credential helper.
+- **GitHub** — `gh auth login`. Bootstrap copies `git/gitconfig` once and preserves the
+   writable local file on reruns, allowing VS Code to manage its session-specific
+   credential helper without changing this repository.
 
 ## Coding-agent instructions
 

@@ -25,6 +25,9 @@ auth.json
 
 # Local setup artifacts
 .DS_Store
+.gitconfig
 .codex-log/
 dotfiles-backups/
 codex/tmp/
+
+*logs/

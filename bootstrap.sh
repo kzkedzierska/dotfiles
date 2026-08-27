@@ -71,7 +71,7 @@ usage() {
 ${GREEN}Usage: ${PROGRAM} [OPTIONS]${NC}   (version ${VERSION})
 
 Provision a fresh Ubuntu node: install core CLIs, clone repos into ~/github,
-symlink dotfiles, and launch the GitHub + Claude Code login flows.
+install dotfiles, and launch the GitHub + Claude Code login flows.
 
 ${YELLOW}OPTIONS:${NC}
     ${GREEN}--no-auth${NC}         Skip the interactive gh / claude login steps
@@ -203,15 +203,42 @@ clone_repos() {
 }
 
 symlink_dotfiles() {
-  log_system "symlinking dotfiles into \$HOME"
+  log_system "symlinking shell and editor dotfiles into \$HOME"
   local f src
-  for f in .screenrc .bashrc .bash_profile .bash_aliases .inputrc .gitconfig .vimrc; do
+  for f in .screenrc .bashrc .bash_profile .bash_aliases .inputrc .vimrc; do
     src="$DOTFILES_DIR/$f"
     if [ -f "$src" ]; then
       safe_link "$src" "$HOME/$f"
     fi
   done
-  log_success "dotfiles symlinked"
+  log_success "shell and editor dotfiles symlinked"
+}
+
+install_git_config() {
+  local src="$DOTFILES_DIR/git/gitconfig" target="$HOME/.gitconfig"
+  [ -f "$src" ] || die "missing Git config template: $src"
+
+  if [ -L "$target" ] && [ "$(readlink "$target")" = "$DOTFILES_DIR/.gitconfig" ]; then
+    rm "$target"
+    cp "$src" "$target"
+    chmod 600 "$target"
+    log_success "migrated tracked .gitconfig symlink to a writable local copy"
+    return
+  fi
+
+  if [ -f "$target" ] && [ ! -L "$target" ]; then
+    log_debug "keeping writable local Git config: $target"
+    return
+  fi
+
+  if [ -e "$target" ] || [ -L "$target" ]; then
+    log_warn "leaving existing non-file Git config unchanged for review: $target"
+    return
+  fi
+
+  cp "$src" "$target"
+  chmod 600 "$target"
+  log_success "installed writable local Git config from $src"
 }
 
 safe_link() {
@@ -347,6 +374,7 @@ fi
 
 clone_repos
 symlink_dotfiles
+install_git_config
 install_agent_config
 run_bash_it
 [ "$DO_TOOLS" = "false" ] || verify_tools
