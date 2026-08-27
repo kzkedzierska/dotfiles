@@ -74,6 +74,6 @@ Additional tool use must resolve a specific remaining uncertainty.
 
 Whenever posting externally through my authenticated account—including GitHub comments, reviews, issues, and pull-request descriptions—append this final line exactly once:
 
-:robot: Sent from coding session
+:robot: *Sent from coding session*
 
 Specify what coding agent was used. Do not add this footer to local files, commit messages, or chat responses.
