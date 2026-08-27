@@ -13,8 +13,8 @@ explicitly.
 
 ## Working style
 
-- Inspect existing code, repository instructions, and configuration before changing
-  behavior.
+- Apply instructions already supplied in the session. Inspect only unsupplied guidance
+  that is applicable to the current path or task before changing behavior.
 - Make reasonable, low-risk assumptions. Ask only when a missing choice materially
   changes the result.
 - Prefer small, reviewable changes that preserve unrelated user work.
@@ -27,21 +27,27 @@ explicitly.
 Treat context, tool output, and tool round-trips as limited resources without
 sacrificing correctness.
 
-- Start with the smallest query that can answer the current question. Search first,
-  then read only relevant regions.
-- Prefer targeted searches, diffs, history, and bounded log/test output over full-file
-  or repository-wide dumps.
-- Reuse evidence already in context. Do not repeat equivalent reads, searches, polls,
-  or verification on unchanged state.
-- Expand investigation only to resolve a concrete uncertainty. Once evidence is
-  sufficient to act safely, act.
-- Group related bounded reads when it reduces round-trips without producing excessive
-  output.
-- Inspect failure details and summaries; do not forward large successful logs.
+- Keep a compact evidence record of paths, symbols, revisions, results, and unresolved
+  questions. Do not reread unchanged source or instructions already seen in the session.
+- Search before reading. Start at a symbol or match and normally read no more than about
+  100 lines around it; expand only to answer a named unresolved question.
+- Target at most about 200 lines or 4,000 tokens for an ordinary tool result. Do not
+  request more than 8,000 output tokens without stating the concrete reason.
+- Return one substantial excerpt, diff, log, or test result at a time. Never combine an
+  instruction-file read with a substantial diff, log, or test result.
+- For changes, inspect status, names, or `--stat` first, then targeted hunks with small
+  context. Avoid full-file diffs and context such as `--unified=60` unless a specific
+  unresolved question requires it.
+- Redirect potentially verbose output to a temporary file and inspect it selectively.
+  On success, retain only the command and summary; on failure, inspect the failing test,
+  traceback, or diagnostic before widening output.
+- Before each additional read, search, history query, or test, identify what uncertainty
+  it can resolve. If none remains, stop investigating and act or report.
+- Group only small, independent operations whose combined result remains within these
+  bounds. Do not trade fewer round-trips for oversized context.
 - Delegate only bounded, independent work that reduces elapsed time or primary-agent
   context. Give delegates explicit scope and request concise findings with file/line
   references. Keep synthesis and ambiguous decisions with the primary agent.
-- Do not reload instruction files already supplied in the session.
 
 ## Implementation and verification
 
@@ -76,4 +82,6 @@ Whenever posting externally through my authenticated account—including GitHub 
 
 :robot: *Sent from coding session*
 
-Specify what coding agent was used. Do not add this footer to local files, commit messages, or chat responses.
+Identify the active coding agent in the post. An agent-specific overlay may explicitly
+replace this footer. Use exactly one applicable footer. Do not add it to local files,
+commit messages, or chat responses.

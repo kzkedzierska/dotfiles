@@ -49,11 +49,16 @@ put account details into the tracked template.
 
 - Global policy: generic behavior that is useful in nearly every repository.
 - Tool overlay: only behavior unique to one agent.
-- Machine-local configuration: ignored local files or environment injection; never
-  commit hostnames, tokens, keys, account identifiers, or private endpoints.
+- Machine-local configuration: ignored local files or environment injection. Host,
+  container, sandbox, and filesystem exceptions belong here; never commit hostnames,
+  tokens, keys, account identifiers, or private endpoints.
 - Repository `AGENTS.md`: project purpose, architecture, commands, contracts, and
   gotchas. Do not repeat global policy unless a hosted agent cannot receive it.
 - Nested instructions: rules for one subtree only.
+
+Treat instructions injected by the client as already loaded state. A reference to an
+owning file identifies authority; it is not a mandate to reopen that file. Skills should
+apply supplied repository guidance and load only missing task-relevant instructions.
 
 Claude Code reads project `CLAUDE.md`, not project `AGENTS.md`. In repositories shared
 with Copilot, prefer `.claude/CLAUDE.md` containing `@../AGENTS.md`; this keeps the

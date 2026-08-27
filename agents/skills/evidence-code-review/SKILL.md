@@ -8,11 +8,20 @@ description: Review PRs, branches, commits, patches, or working-tree changes usi
 Review the actual repository state, not only a pasted diff. Prioritize actionable,
 well-supported findings over speculative or repetitive commentary.
 
+## Scope
+
+Default to a focused review: changed lines, direct dependencies, ancestry, checks, and
+targeted tests. Expand to affected integration paths only when a concrete risk requires
+it. Repository-wide investigation or specialist review requires explicit user opt-in or
+an unresolved finding that cannot be tested locally.
+
 ## Establish scope
 
-1. Read applicable repository instructions, including guidance nearest the changed files.
-2. Establish the base, head, complete diff, and relevant history. Use the merge base so
-   unrelated branch changes do not distort the review.
+1. Apply repository guidance already present in the session. Load a nearer instruction
+  file only when it applies and has not already been supplied.
+2. Establish the base, head, ancestry, changed paths, and diff size. Start with status,
+  name-only, or stat output, then inspect targeted hunks. Cover the complete diff without
+  printing it all into context at once.
 3. For a GitHub pull request, inspect its purpose, checks, prior reviews, and unresolved
    threads when access is available.
 4. During re-review, verify earlier findings against the current head and do not repeat
@@ -24,8 +33,8 @@ that action.
 
 ## Build evidence
 
-- Search existing implementations, configuration, tests, and comparable modules before
-  making design, consistency, or duplication claims.
+- Search existing implementations, configuration, tests, or comparable modules only
+  when needed to test a design, consistency, or duplication concern.
 - Cite the exact existing file and symbol for a duplication finding.
 - Use history only when current code cannot establish intent or compatibility.
 - Trace changed values and state through relevant execution paths, especially where a
