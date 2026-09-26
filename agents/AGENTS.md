@@ -48,6 +48,12 @@ sacrificing correctness.
 - Delegate only bounded, independent work that reduces elapsed time or primary-agent
   context. Give delegates explicit scope and request concise findings with file/line
   references. Keep synthesis and ambiguous decisions with the primary agent.
+- Run delegates on a less capable model tier unless the task explicitly needs frontier
+  reasoning (adversarial statistics audits, scientific positioning, subtle narrative
+  judgment). Mechanical sweeps, renames, extraction, and boilerplate tests go to the
+  lightest adequate tier; the coordinator evaluates the results.
+  TODO: encode per-teammate model tiers in agent definitions (`.agents/agents/*.md`
+  `model:` frontmatter) and relevant skills instead of relying on this prose rule.
 
 ## Implementation and verification
 
