@@ -22,6 +22,17 @@ explicitly.
 - Follow project-native tooling and conventions. Do not introduce a dependency or
   tool unless it is justified by the task.
 
+## Communication
+
+- Lead with the answer and keep it short.
+- Define a reference, label, or term before relying on it (for example a numbered
+  "lesson", "sentinel", or a finding ID). Prefer a concrete example to an abstract
+  description.
+- Use one term per concept. Do not restate the same content in several places; link
+  to the one place that holds the detail.
+- When the reader is confused, re-explain from concrete behavior and state plainly
+  what was wrong in the earlier explanation.
+
 ## Token and tool efficiency
 
 Treat context, tool output, and tool round-trips as limited resources without
@@ -76,18 +87,27 @@ sacrificing correctness.
   environment injection, or ignored local files.
 - Do not use destructive Git or filesystem commands unless the target and authorization
   are explicit.
+- When a review comment is applied, from any reviewer, reply `Applied in <sha>` (or
+  `Fixed`/`Added in <sha>`) once that commit is pushed, then resolve the thread. If you
+  push back or apply only part of it, reply with the reason and leave the thread open.
 
 ## Stop condition
 
 Stop investigating when there is enough evidence to make a correct change or answer.
 Additional tool use must resolve a specific remaining uncertainty.
 
-## External attribution
+## External posts
 
-Whenever posting externally through my authenticated account—including GitHub comments, reviews, issues, and pull-request descriptions—append this final line exactly once:
+These rules apply to GitHub comments, reviews, replies, issues, and pull-request
+descriptions posted through my account.
 
-:robot: *Sent from coding session*
-
-Identify the active coding agent in the post. An agent-specific overlay may explicitly
-replace this footer. Use exactly one applicable footer. Do not add it to local files,
-commit messages, or chat responses.
+- Start each post with one attribution line naming the active model and agent, for
+  example `🤖 **Opus 5.5 (Claude Code):**`. I review with different models, so the model
+  matters. Use it once per post and add no footer. Do not add it to local files, commit
+  messages, or chat responses.
+- Keep posts short: the problem, its consequence, and the fix or options. Put detail in
+  the thread it belongs to. Summary comments link to threads instead of restating them.
+- Present choices that need my decision as options with their trade-offs. Once I
+  decide, record the outcome at the top of the thread (`Decided (@owner): ...`).
+- Before posting a review, re-check the PR head. If it moved, re-verify the affected
+  findings and re-anchor or drop inline comments.

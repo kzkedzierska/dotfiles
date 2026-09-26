@@ -25,7 +25,8 @@ an unresolved finding that cannot be tested locally.
 3. For a GitHub pull request, inspect its purpose, checks, prior reviews, and unresolved
    threads when access is available.
 4. During re-review, verify earlier findings against the current head and do not repeat
-   resolved or obsolete comments.
+   resolved or obsolete comments. Flag threads that were resolved without an applied
+   change or a cited commit.
 
 Use focused, read-only validation when it can confirm or reject a suspected defect.
 Do not edit files, submit reviews, or post comments unless the user separately authorizes
